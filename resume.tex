@@ -95,5 +95,105 @@ Soit $x'' = 1/x$ et $\hat{x} = 1/x''$ alors on vérifie:
     (x \neq 0) \wedge (x'' = 1/x) \wedge (\hat{x} = 1/x'') \rightarrow \hat{x} = x
 \end{equation*}
 Ce qui est vrai par du calcul élémentaire. Biensûr, ici on ne tient pas
-compte de la précision limitée de \emph{floats}.
+compte de la précision limitée des \emph{floats}.
+
+\section*{Les clauses If}
+Soit la clause générale \emph{If} suivante. Avec la précondition P et la 
+postcondition Q.
+
+\begin{align*}
+    \{P\}\; &\textnormal{if}(condition)\;\{\textnormal{progI}\}\\
+            &\textnormal{else} \; \{\textnormal{progII}\}\\
+            &\qquad \qquad \qquad \;\{Q\}
+\end{align*}
+Afin de prouver cette clause il faut procéder aux transformation
+suivantes (et les prouver indépendament):
+\begin{align*}
+    \left\{P \wedge condition \right\}\; &\textnormal{progI}\; \left\{Q\right\} \qquad \text{\underline{et}}\\
+    \left\{P \wedge \lnot condition \right\}\; &\textnormal{progII}\; \left\{Q\right\}
+\end{align*}
+Les deux triplets doivent être vrais pour vérifier la clause.
+
+\paragraph*{Exemple}
+Soit la clause \emph{If} suivant avec sa précondition P et postcondition Q
+respéctive.
+\begin{align*}
+    \overbrace{\left\{true\right\}}^\text{P}\; &\textnormal{if} (x<0) \; \left\{x = -x\right\}\\
+                          &\textnormal{else} \; \left\{x = x\right\}\\
+                          &\qquad \qquad \quad \underbrace{\left\{\hat{x}\geqslant 0\right\}}_{\text{Q}}
+\end{align*}
+Ainsi on fait la transformation :
+\begin{align*}
+    \left\{true \wedge (x<0)\right\}\; &x = -x \left\{\hat{x}\geqslant 0\right\} \quad \text{\underline{et}}\\
+    \left\{true \wedge \lnot (x<0)\right\}\; &x = x \left\{\hat{x}\geqslant 0\right\}
+\end{align*}
+Formellement, il faudrait encore faire las transformation du programme en 
+une formule logique $\phi_{S}$ afin de prouver les deux triplets. Mais
+il est évident que c'est juste.
+
+\section*{Les boucles}
+On s'intérresse ici à comment prouver les boucles. En particulier la boucle
+while. Mais tout d'abord nous avons besoin de quelques définitions et
+d'outils supplémentaires.
+\paragraph*{Définitions}
+\begin{itemize}
+    \item Quand une boucle se termine et que le résultat éspéré est 
+    atteint on dit qu'il s'agit d'une \emph{exactitude partielle}.
+    \item Quand il est garantit qu'une boucle se atteint une fin on 
+    dit : \emph{termination}
+    \item Quand les deux conditions précédentes sont vérifiées on parle
+    d'\emph{exactitude total}
+\end{itemize}
+
+\subsection*{Invariant de boucle}
+Il s'agit d'une formule logique qui est vraie dans les cas suivants:
+\begin{itemize}
+    \item avant la boucle
+    \item avant chaque execution du corps de la boucle
+    \item après chaque execution du corps de la boucle
+    \item après la boucle
+\end{itemize}
+et elle doit rendre la postcondition vraie. Donc grosso merdo c'est vrai
+tout le temps, d'où l'invariance.
+
+\subsection*{Variant de boucle}
+Il s'agit d'une expression évaluée dans les entiers $\mathbb{N}^{+}$ qui
+\begin{itemize}
+    \item est décrémentée de 1 à chaque itération
+    \item ne peut pas aller en dessous de 0
+\end{itemize}
+Donc en d'autres termes int i = CST; et dans la boucle i = i - 1;
+
+\section*{Boucle While}
+Soit la boucle suivante:
+\begin{align*}
+    \left\{P\right\}\; &initialisation;\\
+    &\textnormal{while}(condition)\left\{\textnormal{loop body}\right\};\; \left\{Q\right\}
+\end{align*}
+On vérifie l'exactitude partielle et la terminaison séparement.
+
+\paragraph*{L'exactitude partielle} à l'aide de l'invariant de boucle
+nous donne les formules suivantes:
+\begin{align*}
+    \left\{P\right\}\; &initialisation; &\left\{Inv\right\}\\
+    \left\{Inv \wedge condition\right\}\; &\textnormal{loop body}; &\left\{Inv\right\}\\
+    \left\{Inv \wedge \lnot condition\right\}\; &\textnormal{skip}; &\left\{Q\right\}
+\end{align*}
+
+\paragraph*{La terminaison} nous donne encore la formule suivante à 
+vérifier:
+\begin{equation*}
+    \left\{int var \wedge var > 0\right\}\; \textnormal{loop body};\; \left\{var > var'\geqslant 0\right\}
+\end{equation*}
+
+\paragraph*{Exemple} 
+Soit ce programme qui calcul de façon itérative la somme des entiers de 1 à $n$.
+\begin{align*}
+    \overbrace{\left\{n>0 \wedge x = 1\right\}}^{P}\; &sum = 1; \textnormal{//initialisation}\\
+    \textnormal{while}(x<n) \{\\
+                            &x = x + 1;\\
+                            &sum = sum + x;\\
+                            &\}; \quad \qquad \qquad \underbrace{\left\{sum = n(n+1)/2\right\}}_{Q}
+\end{align*}
+
 \end{document}
