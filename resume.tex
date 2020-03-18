@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\title{Méthodes formelles}
+\author{Daniel Sanz\\
+   Université de Fribourg,\\
+   \texttt{daniel.sanz@unifr.ch}}
+\date{\today}
+
+
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+    Ceci est un résumé non officiel du cours de méthodes 
+    formelles du professeur Ultes Nietzche. Il s'agit
+    principalement de ces slides traduites en français
+    ainsi que quelques exos en guise d'exemple.
+\end{abstract}
+
+\section*{Introduction}
+Les formules logiques, les prédicats entre autres peuvent être 
+utilisés afin d'éxprimer de l'information sur l'état d'un programme.
+\(x = 10;\) indique que x doit impérativement avoir la valeur
+10.
+\section*{Pré \& post-condition}
+\paragraph*{Définition}
+Une précondition P nous indique ce qui peut être considéré comme 
+vrai avant même l'execution d'une séquence d'instructions S.\\
+Une postcondition Q nous indique ce qui sera vrai après l'execution
+des instructions S.
+\paragraph*{Notation}
+On écrit : \(\{P\}\; S\; \{Q\}\) qui veut dire que si P est vrai alors,
+après l'execution de S, Q est vrai. Il s'agit d'un triplet d'Hoarce.\\
+
+\paragraph*{Exemple}
+\begin{equation*}
+    \{x = 2;\}\; x = x \cdot 3;\; \{x = 6;\}
+\end{equation*}
+
+On utilise \(\hat{x}\) comme notation de la variable \(x\) pour indiquer
+la valeur de \(x\) après l'execution du programme et \(x\) avant l'execution.\\
+\paragraph*{Exemple}
+
+\begin{align*}  
+    \{true\}\; x &= x+1;\; \{\hat{x}>x\}\\
+    \{true\}\; x &= x+1;\; \{\hat{x} = x + 1\}
+\end{align*}
+
+\section*{Les assertions}
+Il est possible d'écrire des prédicats entre deux lignes de code. On
+présume alors que ce prédicats est la postcondition de la ligne de code
+précédente et qu'il est la précondition de la ligne suivante.
+
+\paragraph*{Définition}
+
+De tels prédicats sont dits \emph{assertions} ou \emph{annotations}.
+Pour savoir si des triplets sont corrects il faut tout d'abord transformer
+le programme S en une formule \(\phi_{S}\). Ainsi il est possible de prouver
+l'exactitude d'un triplet:
+
+\begin{equation*}
+    \{P\}\; S\; \{Q\}
+\end{equation*}
+
+en verifiant la formule: 
+
+\begin{equation*}
+    P \wedge \phi_{S} \rightarrow Q
+\end{equation*}
+
+ou de façon analogue:
+
+\begin{equation*}
+    \phi_{S} \rightarrow (P \rightarrow Q)
+\end{equation*}
+
+\paragraph*{Exemple}
+\begin{align*}
+    \{true\}\; x &= 10; \; \{x > 0\}\\
+    \phi_{S} &\equiv x = 10
+\end{align*}
+donc, $(true \wedge ( x = 10))\rightarrow (x>10)$.
+\paragraph*{Exemple}
+\begin{align*}
+    \{x \neq 0\}\; x &= 1/x;\\
+    x &= 1/x; \; \{\hat{x} = x\}
+\end{align*}
+Soit $x'' = 1/x$ et $\hat{x} = 1/x''$ alors on vérifie:
+\begin{equation*}
+    (x \neq 0) \wedge (x'' = 1/x) \wedge (\hat{x} = 1/x'') \rightarrow \hat{x} = x
+\end{equation*}
+Ce qui est vrai par du calcul élémentaire. Biensûr, ici on ne tient pas
+compte de la précision limitée de \emph{floats}.
+\end{document}
