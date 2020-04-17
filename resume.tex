@@ -2,6 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amsfonts,amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \title{Méthodes formelles}
 \author{Daniel Sanz\\
@@ -195,5 +197,123 @@ Soit ce programme qui calcul de façon itérative la somme des entiers de 1 à $
                             &sum = sum + x;\\
                             &\}; \quad \qquad \qquad \underbrace{\left\{sum = n(n+1)/2\right\}}_{Q}
 \end{align*}
+\emph{Exactitude partielle}\\
+On pose l'invariant \(\text{sum} = x(x+1)/2\).\\
+On commence par verifier l'initialisation.
+\begin{align*}
+    \{n>0 \wedge x = 1\}\; \text{sum} = 1 \;\{\text{sum} = x(x+1)/2\}\\
+    (n>0) \wedge (x=1) \wedge (\text{sum} = 1) \rightarrow (\text{sum} = x(x+1)/2)
+\end{align*}
+Ce qui est vrai car \(1 = 1(1+1)/2\). Puis nous vérifions le corps de la
+boucle avec le triplet suivant:
+\begin{align*}
+    \{(\text{sum} = x(x+1)/2) \wedge (x<n)\}\; &x = x + 1;\\
+    &\text{sum} = \text{sum} + x; \{\text{sum}\; x(x+1)/2\}
+\end{align*}
+Donc,
+\begin{align*}
+    &(\text{sum} = x(x+1)/2)\\
+    \wedge\; &(x<n)\\
+    \wedge\; &(x' = x + 1)\\
+    \wedge\; &(\text{sum}' = sum + x') \rightarrow (\text{sum}' = x'(x'+1)/2)
+\end{align*}
+
+\begin{align*}
+    \text{sum}' &= \frac{x(x+1)}{2} + x + 1 = \frac{x(x+1)}{2} + \frac{2x + 2}{2}\\
+    &= \frac{x^{2} + x +2x + 2}{2} = \frac{x^{2} + 3x +2}{2}\\
+    &= \frac{(x+2)(x+1)}{2} = \frac{x'(x'+ 1)}{2}
+\end{align*}
+
+Puis la dérnière formule à la fin de la boucle:
+\[
+  sum = \frac{x(x+1)}{2} \wedge x \geq n \to sum = \frac{n(n+1)}{2}
+\]
+Qui est vraie si \(x = n\) vu que les deux côtés de la formule sont les mêmes.
+\emph{Terminaison}\\
+Avec $n-x$ comme variant on obtient la formule:
+
+\begin{align*}
+   int\ var\ &\wedge \\
+   var > 0\ &\wedge \\
+   x = 1\ &\wedge \\
+   n > 0\ &\wedge \\
+   var = n - x\ &\wedge \\
+   x' = x + 1\ &\wedge \\
+   sum' = sum + x'\ &\wedge \\
+  var' = n - x'\ &\to \\
+  var > var' &\geq 0
+\end{align*}
+et donc
+\[
+  var' = n - x' = n - x + 1
+\]
+
+\[
+  n - x > n - x - 1 \geq 0
+\]
+prouve la terminaison.
+
+\section*{Notions sur les prédicats}
+\subsection*{Faiblesses et forces des prédicats}
+\emph{Définition :} $P$ est plus faible que $Q$ si et seulement si $Q \to P$\\
+Ainsi $true$ est le plus faible des prédicats car il est impliqué par tout. Analoguement,
+$false$ est le plus fort des prédicats car il implique tout.
+\paragraph*{exemple}
+
+\[\overbrace{-10 \leq x \leq 10}^Q \to \overbrace{-100 \leq x \leq 100}^{P}\]
+En effet, $P$ est plus faible que $Q$ car $P$ décrit plus "d'état" que $Q$.
+On peut comprendre ça comme quoi $Q$ est une implication plus stricte.
+
+\subsection*{L'affaiblissement d'une précondition}
+Si $P$ est plus faible que $P'$ c-à-d que $P' \to P$ alors prouver le triplet
+\[\{P\}\;S\;\{Q\}\]
+garantit la validité de $\{P'\} \; S \; \{Q\}$. En effet, 
+\begin{align*}
+    &(P \wedge \phi_{S}) \to Q\\
+    &(P' \wedge \phi_{S}) \to (P \wedge \phi_{S}) \to Q
+\end{align*}
+
+\subsection*{Renforcement d'une postcondition}
+
+Si $Q$ est plus fort que $Q'$ c-à-d que $Q \to Q'$ alors,
+\begin{align*}
+    \{P\}\;S\;\{Q\} \Rightarrow &(P \wedge \phi_{S}) \to (Q \to Q')\\
+    &(P \wedge \phi_{S}) \to Q'\\
+    &\{P\}\;S\;\{Q'\}
+\end{align*}
+
+\section*{Logique propositionelle}
+\subsection*{Syntaxe de la logique propositionelle}
+Une formule propositionelle logique peut se construire comme suit:
+\begin{itemize}
+    \item Les valeurs de vérité $\bot$ pour false et $\top$ pour true sont aussi bien des variables propositionelles que des formules.
+    \item Si $F$ et $G$ sont des formules propo. logiques, alors
+    \begin{itemize}
+        \item $(F)$
+        \item $\neg F$
+        \item $F \wedge G$
+        \item $F \vee G$
+        \item $F \to G$
+        \item $F \leftrightarrow G$
+    \end{itemize}
+    le sont aussi.
+\end{itemize}
+\emph{Définition: }Si $P$ est une variable, alors $P$ et $\neg P$ sont
+dit litéraux.
+
+\subsection*{Intérpretations des variables propositionnelles}
+
+\emph{Définition: } Une intérpretation $I$ est une assignation de valeurs
+de vérité à des variables propositionelles.
+
+\paragraph*{exemple}
+\begin{align*}
+    I: \{ P \mapsto true, Q \mapsto false,\dots \} 
+\end{align*}
+\emph{Notation: }La valeur de vérité de la variable $p$ sous l'intéerpretation $I$
+s'écrit $I[P]$ avec l'exemple d'avant ça donne:
+\[
+    I[P] = true, I[Q] = false
+\]
 
 \end{document}
